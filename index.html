@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>type</title>
+</head>
+
+<body>
+    <input type="text" id="input">
+    <h2 id="output"></h2>
+</body>
+<script src="https://unpkg.com/kaplay@3001.0.0-alpha.20/dist/kaplay.js"></script>
+<script>
+    const keys = [
+        ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+        ["a", "s", "d", "f", "g", "h", "j", "k", "l", ';'],
+        ["z", "x", "c", "v", "b", "n", "m", ',', '.', '/'],
+    ]
+
+
+    kaplay({
+        width: 400,
+        height: 110,
+    })
+
+    setBackground(0, 200, 0);
+
+    function addKey(keyText, position) {
+        const keybox = add([
+            'key',
+            keyText,
+            pos(position),
+            color(120, 120, 120),
+            rect(30, 30),
+            anchor("center"),
+            outline(1, [0, 0, 0]),
+            area(),
+            { text: keyText, position },
+        ])
+
+        keybox.add([
+            text(keyText, {
+                width: 5,
+                align: "center",
+                size: 20
+            }),
+            anchor("center"),
+            pos(0, -10),
+        ])
+
+        keybox.setRed = () => {
+            keybox.outline.color = RED
+        }
+
+        keybox.setBlack = () => {
+            keybox.outline.color = BLACK
+        }
+
+        keybox.onHover(() => {
+            keybox.outline.color = RED
+        })
+
+        keybox.onHoverEnd(() => {
+            keybox.outline.color = BLACK
+        })
+
+        return keybox
+    }
+
+    // scene("nogamepad", () => {
+
+    // console.log('hello');
+    const keysObjects = [
+        [],
+        [],
+        [],
+    ]
+
+    function addSelector(position) {
+        const selector = add([
+            'selector',
+            pos(position),
+            color(120, 120, 120),
+            rect(30, 30, {
+                fill: false
+            }),
+            anchor("center"),
+            outline(4, RED),
+            {
+                goto(x, y) {
+                    this.pos = keysObjects[x][y].position
+                    this.text = keysObjects[x][y].text
+                },
+                text: '',
+            }
+            // area(),
+            // { text: keyText, position },
+        ])
+
+        return selector
+    }
+
+
+    for (let i = 0; i < keys.length; i++) {
+        for (let j = 0; j < keys[i].length; j++) {
+
+            const posi = vec2(j < 5 ? 20 : 30, 20).add(j * 33, i * 33)
+            const key = addKey(keys[i][j], posi)
+
+            // if (j >= 5) {
+            //     key.setRed()
+            // }
+
+            keysObjects[i].push(key)
+        }
+    }
+
+    const selectorL = addSelector(keysObjects[1][2].position)
+    keysObjects[1][2].readd()
+    const selectorR = addSelector(keysObjects[1][2 + 5].position)
+    keysObjects[1][2 + 5].readd()
+
+    const selectors = {
+        left: selectorL,
+        right: selectorR
+    }
+    
+    // console.log(keysObjects)
+
+    const keysSaver = {
+        left: { firstKey: null, secondKey: null },
+        right: { firstKey: null, secondKey: null }
+    }
+
+
+    onGamepadConnect(() => {
+        // console.log('connected');
+    })
+
+    // onKeyDown((key) => {
+    // onGamepadButtonDown((key) => {
+    function stickToKey(dir) {
+        let key = null
+
+        key = dir.x > 0.2 ? 'middleRight' : key
+        key = dir.x > 0.6 ? 'right' : key
+        key = dir.x < -0.2 ? 'middleLeft' : key
+        key = dir.x < -0.6 ? 'left' : key
+        key = dir.y > 0.2 ? 'down' : key
+        key = dir.y < -0.2 ? 'up' : key
+
+        return key
+    }
+
+    configStick('left', 0)
+    configStick('right', 5)
+
+    function configStick(keyboardSide, offset) {
+        const keys = keysSaver[keyboardSide]
+        const selector = selectors[keyboardSide]
+
+        onGamepadStick(keyboardSide, (stickPos) => {
+
+            // console.log('dir', stickPos);
+
+
+            let key = stickToKey(stickPos)
+
+            // console.log('key', key);
+
+
+            if (keys.firstKey) {
+                if (keys.firstKey === 'middleRight' || keys.firstKey === 'middleLeft') {
+                    keys.firstKey = key
+                }
+
+                keys.secondKey = key
+                // console.log('state2', keys.secondKey);
+            } else {
+                keys.firstKey = key
+                // console.log('state', keys.firstKey);
+            }
+
+
+            // if (key === 'space') { return }
+
+            // debug.log(`${key}`)
+
+            switch (keys.firstKey) {
+
+                case "middleLeft":
+                    selector.goto(1, offset + 1)
+                    break
+
+                case "middleRight":
+                    selector.goto(1, offset + 3)
+                    break
+
+                case "left":
+
+                    if (keys.secondKey === 'up') {
+                        selector.goto(0, offset + 0)
+                    }
+                    if (keys.secondKey === 'down') {
+                        selector.goto(2, offset + 0)
+                    }
+                    if (keys.secondKey === 'left') {
+                        selector.goto(1, offset + 0)
+                    }
+                    // todo
+                    // keysObjects[1][1].position
+                    break
+
+                case "right":
+                    if (keys.secondKey === 'up') {
+                        selector.goto(0, offset + 4)
+                    }
+                    if (keys.secondKey === 'down') {
+                        selector.goto(2, offset + 4)
+                    }
+                    if (keys.secondKey === 'right') {
+                        selector.goto(1, offset + 4)
+                    }
+
+                    // keysObjects[1][3].position
+                    break
+
+                case "up":
+                    if (keys.secondKey === 'right') {
+                        selector.goto(0, offset + 3)
+                    }
+                    if (keys.secondKey === 'left') {
+                        selector.goto(0, offset + 1)
+                    }
+                    if (keys.secondKey === 'up') {
+                        selector.goto(0, offset + 2)
+                    }
+
+                    break
+
+                case "down":
+                    if (keys.secondKey === 'right') {
+                        selector.goto(2, offset + 3)
+                    }
+                    if (keys.secondKey === 'left') {
+                        selector.goto(2, offset + 1)
+                    }
+                    if (keys.secondKey === 'down') {
+                        selector.goto(2, offset + 2)
+                    }
+
+                    break
+            }
+
+            if (key === null) {
+                if (keys.firstKey === key) {
+                    // console.log('state1', keys.firstKey);
+                    // get('key', key).forEach((k) => k.setBlack())
+                    selector.goto(1, offset + 2)
+                }
+                keys.firstKey = null
+                keys.secondKey = null
+                // console.log('state2', keys.secondKey);
+                return
+            }
+        })
+
+        // // onKeyRelease((key) => {
+        // onGamepadButtonRelease((key) => {
+        //     if (keys.firstKey === key) {
+                // console.log('state1', keys.firstKey);
+        //         // get('key', key).forEach((k) => k.setBlack())
+        //         selector.goto(1, 2)
+        //     }
+        //     keys.firstKey = null
+        //     keys.secondKey = null
+            // console.log('state2', keys.secondKey);
+        // })
+
+        // onKeyPress('space', (key) => {
+        const shoulderButton = keyboardSide === 'left' ? 'lshoulder' : 'rshoulder'
+        onGamepadButtonPress(shoulderButton, (key) => {
+            // setTimeout((text) => {
+            const text = selector.text
+            fetch('/process_character/' + text)
+            console.log('sending', text);
+            // }, 2000, selector.text)
+        })
+    }
+
+    // add([
+    //     text("no gamepad!", {
+    //         width: width() - 80,
+    //         align: "center",
+    //     }),
+    //     pos(center()),
+    //     anchor("center"),
+    // ]);
+    // onGamepadConnect(() => {
+    //     go("game");
+    // });
+    // });
+
+    // scene("game", () => {
+
+
+    //     onGamepadButtonPress((b) => {
+    //         debug.log(b);
+    //     });
+
+    // onGamepadButtonPress(["south", "west"], () => {
+    //     player.jump();
+    // });
+
+    // onGamepadStick("left", (v) => {
+    //     player.move(v.x * 400, 0);
+    // });
+
+    // onGamepadDisconnect(() => {
+    //     go("nogamepad");
+    // });;
+    // });
+
+    // console.log(getGamepads());
+    // if (getGamepads().length > 0) {
+    //     // go("game");
+    //     go("nogamepad");
+    // }
+    // else {
+    //     go("nogamepad");
+    // }
+
+    // document.addEventListener('keydown', async (e) => {
+        // console.log(e.key)
+    //     const res = await fetch('/' + e.key)
+    //     const text = await res.text()
+        // console.log(text)
+    //     output.innerText += text
+    // })
+</script>
+
+</html>
