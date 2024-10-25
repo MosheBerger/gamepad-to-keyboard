@@ -3,7 +3,7 @@ const app = express()
 const robot = require('robotjs')
 
 const fs = require('node:fs')
-const { spawn } = require('child_process')
+// const { spawn } = require('child_process')
 
 app.get('/', (req, res) => {
     res.send(fs.readFileSync('index.html', 'utf8'))
