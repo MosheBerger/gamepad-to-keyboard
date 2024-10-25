@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const robot = require('robotjs')
 
 const fs = require('node:fs')
 const { spawn } = require('child_process')
@@ -10,7 +11,8 @@ app.get('/', (req, res) => {
 
 app.get('/process_character/:letter', (req, res) => {
     const letter  = req.params.letter
-    spawn('python', ['./type.py', letter])
+    // spawn('python', ['./type.py', letter])
+    robot.keyTap(letter)
     console.log(letter)
     res.send('done')
 })
