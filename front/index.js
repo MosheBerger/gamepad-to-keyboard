@@ -113,7 +113,12 @@ function checkForSelector(gamepad, side) {
         setTimeout(() => key.classList.remove('clicked'), 200)
 
 
-        send.text(text)
+        if (text.length > 1) {
+            send.text(text)
+        } else {
+            send.key(text)
+        }
+        
         console.log('sending', text);
 
         clicked[side] = true
