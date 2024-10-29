@@ -11,5 +11,5 @@ from pynput.keyboard import Controller, Key
 keyboard = Controller()
 
 
-keyboard.press('ש')
-keyboard.release('ש')
+keyboard.tap('ש')
+
