@@ -36,7 +36,7 @@ function gamepadToKeyboard(gamepad, side) {
 
     } else {
         if (
-            posQueue[side][0].includes('middle') ||
+            posQueue[side][0]?.includes('middle') ||
             posQueue[side].length === 2
         ) {
             posQueue[side].pop()

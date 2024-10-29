@@ -28,7 +28,7 @@
 
 
     &.active-area {
-        outline: 2px solid red;
+        outline: 2px solid #ffffffd6 ;
     }
 
     &.selector {
@@ -40,8 +40,10 @@
     }
 
     &.clicked {
-        transition: outline 0.01s ease-in;
-        outline: 2px solid rgb(255, 255, 255);
+        transform: scale(1.4);
+
+        transition: outline 0.01s ease-in-out;
+        outline: 4px solid red;
     }
 
 
