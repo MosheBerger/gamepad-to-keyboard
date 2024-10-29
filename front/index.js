@@ -1,6 +1,7 @@
 import { GamepadController } from "./Gamepad.js";
 import { gamepadLoop } from "./gamepadLoop.js";
 import { selectKeyboard } from "./mapKeybords.js";
+import { send } from "./sendTextAndKeys.js";
 import { stickToKeys } from "./stickToKeys.js";
 
 
@@ -112,8 +113,7 @@ function checkForSelector(gamepad, side) {
         setTimeout(() => key.classList.remove('clicked'), 200)
 
 
-
-        fetch('/process_character/' + text)
+        send.text(text)
         console.log('sending', text);
 
         clicked[side] = true
@@ -146,7 +146,7 @@ function checkForKeyboard(gamepad) {
  * @param {GamepadController} gamepad
  */
 function checkForButtons(gamepad) {
-    const texts = ['delete','backspace','enter','space']
+    const keys = ['delete','backspace','enter','space']
     const buttons= ['faceNorth', 'faceSouth', 'faceEast', 'faceWest']
     
     buttons.forEach((button,i) => {
@@ -155,8 +155,8 @@ function checkForButtons(gamepad) {
             if (clicked[button]) { return }
             clicked[button] = true
             
-            fetch('/process_character/' + texts[i])
-            console.log('sending', texts[i]);
+            send.key(keys[i])
+            console.log('sending', keys[i]);
         
         } else {
             clicked[button] = false
