@@ -1,7 +1,11 @@
+# source v-env/bin/activate
+
 from flask import Flask, send_from_directory, request, jsonify
+from flask_cors import CORS
 from pynput.keyboard import Controller, Key
 
 app = Flask(__name__, static_folder='front')
+CORS(app)
 keyboard = Controller()
 
 # serve static files
