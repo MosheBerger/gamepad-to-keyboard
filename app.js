@@ -2,8 +2,8 @@ const express = require('express');
 const app = express()
 
 const { readFileSync} = require('node:fs')
-const robot = require('robotjs')
-// const {keyboard ,Key} = require('@nut-tree-fork/nut-js')
+// const robot = require('robotjs')
+const {keyboard ,Key} = require('@nut-tree-fork/nut-js')
 const buildPath = require('path')
 const FRONTEND_PATH = buildPath.join(__dirname, 'front')
 
@@ -21,8 +21,8 @@ app.use(express.static(FRONTEND_PATH))
 app.get('/process_character/:letter', (req, res) => {
     const letter  = req.params.letter
     
-    // keyboard.type(letter)
-    robot.keyTap(letter)
+    keyboard.type(letter)
+    // robot.keyTap(letter)
     //todo fix hebrew doesn't work on robotjs 
     console.log(letter)
     res.send('done')
