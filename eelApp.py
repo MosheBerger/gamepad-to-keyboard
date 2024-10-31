@@ -1,15 +1,27 @@
 import eel
-
-# get the screen size
 import ctypes
-user32 = ctypes.windll.user32
-screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+import platform
+import alwaysOnTop as aot
 
-WIDTH = 250 * 1.2
-HEIGHT = 100 * 1.2
+# Set dimensions
+WIDTH = int(250 * 1.2)
+HEIGHT = int(100 * 1.2)
 
+# Get screen size (only on Windows)
+if platform.system() == "Windows":
+    user32 = ctypes.windll.user32
+    screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+else:
+    screensize = (800, 600)  # Default size for Linux if needed
+
+
+@eel.expose
+def set_always_on_top():
+    aot.set_always_on_top()
 
 eel.init('front')
+
 eel.start('index.html', size=(WIDTH, HEIGHT),
-                        # position=(screensize[0] - WIDTH, screensize[1] - HEIGHT),
+          position=(screensize[0] - WIDTH, screensize[1] - HEIGHT),
+          
 )

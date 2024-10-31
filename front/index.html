@@ -69,14 +69,15 @@
     <script type="module" src="./index.js"></script>
 
     <script>
-        eel.expose(function () {
-            eel.set_window_position();
-        });
+    function setWindowOnTop() {
+            eel.set_always_on_top()();  
+    }
 
-        window.onload = function () {
-            eel.set_window_position();
-        };
-    </script>
+    window.onload = function () {
+        setWindowOnTop();  
+    };
+</script>
+
 </body>
 
 </html>
