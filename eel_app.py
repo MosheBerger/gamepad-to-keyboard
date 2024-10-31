@@ -1,7 +1,8 @@
 import eel
 import ctypes
 import platform
-import alwaysOnTop as aot
+import always_on_top as aot
+import type_and_click as tnc
 
 # Set dimensions
 WIDTH = int(250 * 1.2)
@@ -18,6 +19,14 @@ else:
 @eel.expose
 def set_always_on_top():
     aot.set_always_on_top()
+
+@eel.expose
+def type_text(text):
+    tnc.type_text(text)
+
+@eel.expose
+def click_key(key):
+    tnc.click_key(key)
 
 eel.init('front')
 

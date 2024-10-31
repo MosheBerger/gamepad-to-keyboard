@@ -3,6 +3,7 @@
 from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 from pynput.keyboard import Controller, Key
+import type_and_click
 
 app = Flask(__name__, static_folder='front')
 CORS(app)
@@ -26,15 +27,7 @@ def press_key():
         data = request.get_json()
         key = data.get('key')
 
-        # Check if the key is a special key (e.g., 'enter', 'space')
-        if hasattr(Key, key):
-            keyboard.tap(getattr(Key, key))
-            print(f'pressing special key: {key}')
-        else:
-            # Press regular character key
-            keyboard.tap(key)
-            print(f'pressing character key: {key}')
-
+        type_and_click.click_key(key)
         
         return jsonify({'status': 'done'}), 200
     except Exception as e:
@@ -50,9 +43,8 @@ def type_text():
         text = data.get('text')  
 
         # Type the specified text
-        keyboard.type(text)
+        type_and_click.type_text(text)        
         
-        print('typing:', text)
         return jsonify({'status': 'done'}), 200
     except Exception as e:
         print(f"Error typing: {e}")
