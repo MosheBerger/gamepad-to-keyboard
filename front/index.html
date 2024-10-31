@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gamepad keyboard</title>
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="/eel.js"></script>
+
 </head>
 
 <body>
@@ -65,6 +67,16 @@
     </div>
 
     <script type="module" src="./index.js"></script>
+
+    <script>
+        eel.expose(function () {
+            eel.set_window_position();
+        });
+
+        window.onload = function () {
+            eel.set_window_position();
+        };
+    </script>
 </body>
 
 </html>

@@ -1,15 +1,19 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background-color: rgb(70, 68, 63);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .keyboard-container {
     display: flex;
     /* flex-direction: column; */
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background-color: rgb(70, 68, 63);
 }
-
-/* .keyboard {
-    
-} */
 
 .line {
     display: flex;
@@ -28,7 +32,7 @@
 
 
     &.active-area {
-        outline: 2px solid #ffffffd6 ;
+        outline: 2px solid #ffffffd6;
     }
 
     &.selector {
