@@ -22,7 +22,7 @@ def set_always_on_top():
         hwnd = find_window_by_partial_title("gamepad keyboard")
         if hwnd:
             win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
-                                  win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+                                win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
             print("Window set to always on top on Windows!")
         else:
             print("Window not found on Windows.")

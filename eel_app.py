@@ -8,6 +8,9 @@ import type_and_click as tnc
 WIDTH = int(250 * 1.2)
 HEIGHT = int(100 * 1.2)
 
+WIDTH = int(250 * 3)
+HEIGHT = int(100 * 3)
+
 # Get screen size (only on Windows)
 if platform.system() == "Windows":
     user32 = ctypes.windll.user32
@@ -31,6 +34,5 @@ def click_key(key):
 eel.init('front')
 
 eel.start('index.html', size=(WIDTH, HEIGHT),
-          position=(screensize[0] - WIDTH, screensize[1] - HEIGHT),
-          
+            position=(screensize[0] - WIDTH, screensize[1] - HEIGHT),
 )

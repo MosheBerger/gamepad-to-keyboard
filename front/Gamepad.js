@@ -4,22 +4,49 @@
  * @typedef {'leftStickX' | 'leftStickY' | 'rightStickX' | 'rightStickY'} Gamepadaxes
 */
 
-
 export class GamepadController {
 
     #gamepadIndex
     #gamepadObj
+    #loopInterval = null
 
-    constructor(playerNumber = 1) {
-        this.#gamepadIndex = playerNumber - 1;
+    constructor() {
 
-        this.update();
+        window.addEventListener('gamepadconnected', (e) => {
+            this.#onDisconnect()
+            const gamepad = e.gamepad
+            this.#gamepadIndex = gamepad.index
+            this.#onConnect()
+        })
+        
+        window.addEventListener('gamepaddisconnected',
+            this.#onDisconnect
+        )
+
         console.log('gamepadObj', this.#gamepadObj);
     }
+    
 
-    update(){
+    #onConnect() {
+        console.log('gamepad connected');
+        this.#loopInterval = setInterval(this.#loop, 1000 / 60)
+    }
+    #onDisconnect() {
+        if (!this.#loopInterval) { return }
+
+        console.log('gamepad disconnected');
+        clearInterval(this.#loopInterval)
+    }
+
+    #loop() {
+        this.#updateButtonsState();
+
+    }
+
+    #updateButtonsState() {
         this.#gamepadObj = navigator.getGamepads()[this.#gamepadIndex];
     }
+
 
     #buttons = {
         faceNorth: 3,

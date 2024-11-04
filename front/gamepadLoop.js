@@ -10,9 +10,9 @@ export function gamepadLoop(callback) {
 
     window.addEventListener('gamepadconnected', (e) => {
         gamepad = new GamepadController(1)
-        // gamepad.remap({axes:{rightStickY:5},buttons:{select:8,start:7}})
+        gamepad.remap({axes:{rightStickY:5},buttons:{select:8,start:7}})
 
-        gamepad.remap({buttons:{select:8,start:7}})
+        // gamepad.remap({buttons:{select:8,start:7}})
         
         console.log('gamepad connected');
         console.log(gamepad)
@@ -32,7 +32,7 @@ export function gamepadLoop(callback) {
     
     function loop() {
         callback(gamepad)
-        gamepad.update()
+        gamepad.#updateButtonsState()
         // console.count('loop');
     }
 }
