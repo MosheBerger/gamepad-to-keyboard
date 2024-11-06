@@ -7,7 +7,12 @@
 export class GamepadController {
 
     #gamepadIndex
-    #gamepadObj
+
+    /**@type {Gamepad} */
+    #gamepadState
+    /**@type {Gamepad} */
+    #gamepadLastState
+
     #loopInterval = null
 
     constructor() {
@@ -18,14 +23,14 @@ export class GamepadController {
             this.#gamepadIndex = gamepad.index
             this.#onConnect()
         })
-        
+
         window.addEventListener('gamepaddisconnected',
             this.#onDisconnect
         )
 
-        console.log('gamepadObj', this.#gamepadObj);
+        console.log('gamepadObj', this.#gamepadState);
     }
-    
+
 
     #onConnect() {
         console.log('gamepad connected');
@@ -38,13 +43,21 @@ export class GamepadController {
         clearInterval(this.#loopInterval)
     }
 
+
+    #callbacks = [
+        {
+
+        }
+    ]
+
     #loop() {
         this.#updateButtonsState();
 
     }
 
     #updateButtonsState() {
-        this.#gamepadObj = navigator.getGamepads()[this.#gamepadIndex];
+        this.#gamepadLastState = this.#gamepadState
+        this.#gamepadState = navigator.getGamepads()[this.#gamepadIndex];
     }
 
 
@@ -89,8 +102,28 @@ export class GamepadController {
      * @returns boolean
      */
     buttonIsPressed(buttonName) {
-        // return this.#buttons[buttonName]
-        return this.#gamepadObj.buttons[this.#buttons[buttonName]].pressed;
+        const btnIndex = this.#buttons[buttonName]
+        const isPressedNow = this.#gamepadState.buttons[btnIndex].pressed
+        const isPressedLastTime = this.#gamepadLastState.buttons[btnIndex].pressed
+
+        return isPressedNow && !isPressedLastTime // press
+        return !isPressedNow && isPressedLastTime // release
+        return isPressedNow // down
+        return !isPressedNow // up
+    }
+
+
+    isButtonPressed(buttonName) {
+        return this.#gamepadState.buttons[this.#buttons[buttonName]].pressed
+    }
+    isButtonReleased(buttonName) {
+        return
+    }
+    isButtonUp(buttonName) {
+        return
+    }
+    isButtonDown(buttonName) {
+        return
     }
 
     /**
@@ -98,7 +131,7 @@ export class GamepadController {
      * @returns number
      */
     getAxes(stickAndDirection) {
-        return this.#gamepadObj.axes[this.#axes[stickAndDirection]];
+        return this.#gamepadState.axes[this.#axes[stickAndDirection]];
     }
 
     /**
