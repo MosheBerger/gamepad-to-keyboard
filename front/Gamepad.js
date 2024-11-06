@@ -6,14 +6,16 @@
 
 export class GamepadController {
 
-    #gamepadIndex
+    /**@type {number} */#gamepadIndex
 
-    /**@type {Gamepad} */
-    #gamepadState
-    /**@type {Gamepad} */
-    #gamepadLastState
+    /**@type {Gamepad} */ #gamepadState
+    /**@type {Gamepad} */ #gamepadLastState
 
     #loopInterval = null
+
+    AXES_DEAD_ZONE = 0.2
+    AXES_MIDDLE = 0.6
+
 
     constructor() {
 
@@ -44,11 +46,7 @@ export class GamepadController {
     }
 
 
-    #callbacks = [
-        {
-
-        }
-    ]
+    #callbacks = []
 
     #loop() {
         this.#updateButtonsState();
@@ -93,51 +91,67 @@ export class GamepadController {
         rightStickY: 3
     }
 
-    AXES_DEAD_ZONE = 0.2
-    // AXES_MAX = 1
-    AXES_MIDDLE = 0.6
 
-    /**
-     * @param {GamepadButtonName} buttonName 
-     * @returns boolean
-     */
-    buttonIsPressed(buttonName) {
+    //------BUTTONS AND AXES---------------------
+
+    /** @param {GamepadButtonName} buttonName */
+    #getButtonState(buttonName) {
+
         const btnIndex = this.#buttons[buttonName]
         const isPressedNow = this.#gamepadState.buttons[btnIndex].pressed
         const isPressedLastTime = this.#gamepadLastState.buttons[btnIndex].pressed
 
-        return isPressedNow && !isPressedLastTime // press
-        return !isPressedNow && isPressedLastTime // release
-        return isPressedNow // down
-        return !isPressedNow // up
+        if (isPressedNow && !isPressedLastTime) return 'press'
+        if (!isPressedNow && isPressedLastTime) return 'release'
+        if (isPressedNow) return 'down'
+        if (!isPressedNow) return 'up'
     }
 
-
+    /** @param {GamepadButtonName} buttonName */
     isButtonPressed(buttonName) {
-        return this.#gamepadState.buttons[this.#buttons[buttonName]].pressed
-    }
-    isButtonReleased(buttonName) {
-        return
-    }
-    isButtonUp(buttonName) {
-        return
-    }
-    isButtonDown(buttonName) {
-        return
+        const btnState = this.#getButtonState(buttonName)
+        return btnState == 'press'
     }
 
-    /**
-     * @param {Gamepadaxes} stickAndDirection 
-     * @returns number
-     */
+    /** @param {GamepadButtonName} buttonName */
+    isButtonReleased(buttonName) {
+        const btnState = this.#getButtonState(buttonName)
+        return btnState == 'release'
+    }
+
+    /** @param {GamepadButtonName} buttonName */
+    isButtonUp(buttonName) {
+        const btnState = this.#getButtonState(buttonName)
+        return btnState == 'up' || btnState == 'release'
+    }
+
+    /** @param {GamepadButtonName} buttonName */
+    isButtonDown(buttonName) {
+        const btnState = this.#getButtonState(buttonName)
+        return btnState == 'down' || btnState == 'press'
+    }
+
+    /** @param {Gamepadaxes} stickAndDirection      */
     getAxes(stickAndDirection) {
         return this.#gamepadState.axes[this.#axes[stickAndDirection]];
     }
 
-    /**
-     * 
-     * @param {{buttons: {[key in GamepadButtonName]: number}, axes: {[key in Gamepadaxes]: number}}} param0 
-     */
+
+    /**  
+    * @param {{
+    *   button:GamepadButtonName,
+    *   is:'press' | 'release' | 'up'| 'down'
+    * } | {
+    *   axes:Gamepadaxes
+    * }} event
+    */
+    on(event){
+        this.#callbacks.push(new GpEvent(event))
+    }
+
+    // ------MAPPING-------------
+
+    /** @param {{buttons: {[key in GamepadButtonName]: number}, axes: {[key in Gamepadaxes]: number}}} param0 */
     remap({ buttons, axes }) {
         this.#buttons = { ...this.#buttons, ...buttons }
         this.#axes = { ...this.#axes, ...axes }
@@ -151,7 +165,8 @@ export class GamepadController {
 
 }
 
-// const gp = new GamepadController();
+const gp = new GamepadController();
+gp.on({button:'faceNorth',is:'down'})
 // gp.buttonIsPressed('dPadDown')
 // gp.getaxes('leftStickX')
 // gp.remap({

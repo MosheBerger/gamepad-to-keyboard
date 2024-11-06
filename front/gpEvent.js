@@ -21,18 +21,17 @@ class GpEvent {
 */
 function runEvent(gamepad, { eventType, button: buttonName, callback }) {
 
-    const dic = {
+    const dict = {
         press:'isButtonPressed',
         release: 'isButtonReleased',
         up: 'isButtonUp',
         down: 'isButtonDown'
     }
 
-    eventType = dic[eventType]
+    eventType = dict[eventType]
 
     if (gamepad[eventType](buttonName)){
         callback(gamepad.getButton())
     }
 }
 
-new GpEvent()
