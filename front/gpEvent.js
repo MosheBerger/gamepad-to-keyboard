@@ -2,8 +2,8 @@
 
 class GpEvent {
     /**
-     * @param {'press' | 'release' | 'up'| 'down'} eventType - The type of event can be one of the following: 'onPress', 'whilePressed', 'onRelease', 'whileReleased'
-     * @param {import("./Gamepad").GamepadButtonName} button - The button that triggered the event
+     * @param {'press' | 'release' | 'up'| 'down'} buttonState - The type of event can be one of the following: 'onPress', 'whilePressed', 'onRelease', 'whileReleased'
+     * @param {import("./Gamepad").GamepadButtonName} ButtonName - The button that triggered the event
      * @param {(button: GamepadButton)=>void} callback - The function to call when the event is triggered
     */
     constructor(eventType, button, callback) {
@@ -19,7 +19,7 @@ class GpEvent {
  * @param {import("./Gamepad").GamepadController} gamepad - The gamepad that triggered the event. 
  * @param {GpEvent} gpEvent - The gamepad event containing the event type, button, and callback.
 */
-function runEvent(gamepad, { eventType, button: buttonName, callback }) {
+function runEvent(gamepad, { buttonState, buttonName, callback }) {
 
     const dict = {
         press:'isButtonPressed',
@@ -28,9 +28,9 @@ function runEvent(gamepad, { eventType, button: buttonName, callback }) {
         down: 'isButtonDown'
     }
 
-    eventType = dict[eventType]
+    const event = dict[buttonState]
 
-    if (gamepad[eventType](buttonName)){
+    if (gamepad[event](buttonName)){
         callback(gamepad.getButton())
     }
 }
