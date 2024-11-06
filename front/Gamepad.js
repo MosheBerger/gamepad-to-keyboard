@@ -1,13 +1,11 @@
+/** @import { GamepadButtonName, GamepadAxes,ButtonState,GpEventPayload } from './types.d.ts' */
 
-/**
- * @typedef {'faceNorth' | 'faceSouth' | 'faceEast' | 'faceWest'  | 'dPadUp' | 'dPadDown' | 'dPadLeft' | 'dPadRight' | 'shoulderL' | 'shoulderR' | 'triggerL' | 'triggerR' | 'stickL' | 'stickR' | 'start' | 'select' | 'menu'} GamepadButtonName
- * @typedef {'leftStickX' | 'leftStickY' | 'rightStickX' | 'rightStickY'} Gamepadaxes
-*/
+
 
 export class GamepadController {
 
-    /**@type {number} */#gamepadIndex
-
+    /**@type {number} */ #gamepadIndex
+    
     /**@type {Gamepad} */ #gamepadState
     /**@type {Gamepad} */ #gamepadLastState
 
@@ -94,15 +92,15 @@ export class GamepadController {
 
     //------BUTTONS AND AXES---------------------
 
-    /** @param {GamepadButtonName} buttonName */
+    /** @param {GamepadButtonName} buttonName * @returns {ButtonState} */
     #getButtonState(buttonName) {
 
         const btnIndex = this.#buttons[buttonName]
         const isPressedNow = this.#gamepadState.buttons[btnIndex].pressed
         const isPressedLastTime = this.#gamepadLastState.buttons[btnIndex].pressed
 
-        if (isPressedNow && !isPressedLastTime) return 'press'
-        if (!isPressedNow && isPressedLastTime) return 'release'
+        if (isPressedNow && !isPressedLastTime) return 'pressed'
+        if (!isPressedNow && isPressedLastTime) return 'released'
         if (isPressedNow) return 'down'
         if (!isPressedNow) return 'up'
     }
@@ -110,41 +108,35 @@ export class GamepadController {
     /** @param {GamepadButtonName} buttonName */
     isButtonPressed(buttonName) {
         const btnState = this.#getButtonState(buttonName)
-        return btnState == 'press'
+        return btnState == 'pressed'
     }
 
     /** @param {GamepadButtonName} buttonName */
     isButtonReleased(buttonName) {
         const btnState = this.#getButtonState(buttonName)
-        return btnState == 'release'
+        return btnState == 'released'
     }
 
     /** @param {GamepadButtonName} buttonName */
     isButtonUp(buttonName) {
         const btnState = this.#getButtonState(buttonName)
-        return btnState == 'up' || btnState == 'release'
+        return btnState == 'up' || btnState == 'released'
     }
 
     /** @param {GamepadButtonName} buttonName */
     isButtonDown(buttonName) {
         const btnState = this.#getButtonState(buttonName)
-        return btnState == 'down' || btnState == 'press'
+        return btnState == 'down' || btnState == 'pressed'
     }
 
-    /** @param {Gamepadaxes} stickAndDirection      */
+    /** @param {GamepadAxes} stickAndDirection      */
     getAxes(stickAndDirection) {
         return this.#gamepadState.axes[this.#axes[stickAndDirection]];
     }
 
 
-    /**  
-    * @param {{
-    *   button:GamepadButtonName,
-    *   is:'press' | 'release' | 'up'| 'down'
-    * } | {
-    *   axes:Gamepadaxes
-    * }} event
-    */
+    // todo i'm here
+    /**  @param {GpEventPayload} event */
     on(event){
         this.#callbacks.push(new GpEvent(event))
     }
@@ -165,8 +157,8 @@ export class GamepadController {
 
 }
 
-const gp = new GamepadController();
-gp.on({button:'faceNorth',is:'down'})
+// const gp = new GamepadController();
+// gp.on({button:'faceNorth',is:'down'})
 // gp.buttonIsPressed('dPadDown')
 // gp.getaxes('leftStickX')
 // gp.remap({
