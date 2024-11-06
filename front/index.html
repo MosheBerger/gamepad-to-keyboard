@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gamepad keyboard</title>
     <link rel="stylesheet" href="style.css">
-    <script type="text/javascript" src="/eel.js"></script>
 
 </head>
 
@@ -67,16 +66,17 @@
     </div>
 
     <script type="module" src="./index.js"></script>
+    <script type="text/javascript" src="/eel.js"></script>
 
     <script>
-    function setWindowOnTop() {
-            eel.set_always_on_top()();  
-    }
+        
+        
+        window.onload = () => {
+            if (!window.eel) return;
 
-    window.onload = function () {
-        setWindowOnTop();  
-    };
-</script>
+            eel.set_always_on_top()();
+        };
+    </script>
 
 </body>
 
