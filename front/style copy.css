@@ -25,8 +25,8 @@ body {
     text-align: center;
     color: aliceblue;
     /* border: 2px solid black; */
-    outline:  2px solid black;
-    outline-offset: -4px;
+    outline: 2px solid black;
+    outline-offset: -2px;
     background-color: grey;
     margin: 1px;
     opacity: 0.7;
@@ -34,6 +34,9 @@ body {
     transition: all 0.1s ease-in;
 
     /* box-shadow: 0px 0px 5px 0.1px #790808; */
+
+
+    /* == COLORING == */
 
     /* &.left {
     border: 2px solid #790808c2;
@@ -51,7 +54,7 @@ body {
     border: 2px solid rgb(12, 121, 8);
     } */
 
-    &.left {
+    /* &.left {
     border: 2px solid #790808c2;
     }
 
@@ -65,7 +68,7 @@ body {
 
     &.down {
     border: 2px solid rgb(12, 121, 8);
-    }
+    } */
 
     /* &.left {
         &.-up{
@@ -92,24 +95,59 @@ body {
         outline: 1px solid #ffffffd6;
         z-index: 99;
 
+        /* == MOVE TO 4 SIDES ==  */
+        /* 
         &.left {
-            translate: -4px 0;
+            translate: -6px 0;
+            &.-left{
+                translate: -28px 0;
+            }
         }
 
         &.right {
-            translate: 4px 0;
+            translate: 6px 0;
+            &.-right{
+                translate: 28px 0;
+            }
         }
 
         &.up {
-            translate: 0 -4px;
+            translate: 0 -6px;
+            &.-up{
+                translate: 0 -28px;
+            }
         }
 
         &.down {
-            translate: 0 4px;
+            translate: 0 6px;
+            &.-down{
+                translate: 0 28px;
+            }
+        } */
+
+
+        /* == MOVE TO JUST A LITTLE == */
+        &.left {
+            translate: -6px 0;
+
         }
 
+        &.right {
+            translate: 6px 0;
 
-        &.-left {
+        }
+
+        &.up {
+            translate: 0 -6px;
+
+        }
+
+        &.down {
+            translate: 0 6px;
+
+        } 
+
+        /* &.-left {
             translate: -1px 0;
         }
 
@@ -123,7 +161,7 @@ body {
 
         &.-down {
             translate: 0 1px;
-        }
+        } */
     }
 
     &.selector {
