@@ -91,42 +91,7 @@ function drawActiveArea(keyboardSide, activeAreaPos, selectorPos) {
 
 }
 
-// // todo update Gamepad class with this function
-// let clicked = { left: false, right: false, select: false }
-// /**
-//  * 
-//  * @param {GamepadController} gamepad 
-//  * @param {'left' | 'right'} side 
-//  */
-// function checkForSelector(gamepad, side) {
 
-//     const shoulder = side === 'left' ? 'shoulderL' : 'shoulderR'
-//     if (gamepad.isButtonPressed(shoulder)) {
-
-//         if (clicked[side]) { return }
-
-//         const keyboardElement = document.querySelector(`.keyboard-${side}`)
-//         const key = keyboardElement.querySelector(`.selector`)
-//         const text = key.textContent
-
-//         key.classList.add('clicked')
-//         setTimeout(() => key.classList.remove('clicked'), 200)
-
-
-//         if (text.length > 1) {
-//             send.text(text)
-//         } else {
-//             send.key(text)
-//         }
-
-//         console.log('sending', text);
-
-//         clicked[side] = true
-
-//     } else {
-//         clicked[side] = false
-//     }
-// }
 
 function selectorClick(side) {
 
@@ -148,60 +113,10 @@ function selectorClick(side) {
 }
 
 
-// let keyboardIndexCounter = 1
-// function checkForKeyboard(gamepad) {
-
-
-//     if (gamepad.buttonIsPressed('select')) {
-
-//         if (clicked['select']) { return }
-//         clicked['select'] = true
-
-//         selectKeyboard(keyboardIndexCounter)
-
-//         keyboardIndexCounter++
-
-//     } else {
-//         clicked['select'] = false
-//     }
-// }
-
-// /**
-//  * 
-//  * @param {GamepadController} gamepad
-//  */
-// function checkForButtons(gamepad) {
-//     const keys = ['delete', 'backspace', 'enter', 'space']
-//     const buttons = ['faceNorth', 'faceSouth', 'faceEast', 'faceWest']
-
-//     buttons.forEach((button, i) => {
-//         if (gamepad.buttonIsPressed(button)) {
-
-//             if (clicked[button]) { return }
-//             clicked[button] = true
-
-//             send.key(keys[i])
-//             console.log('sending', keys[i]);
-
-//         } else {
-//             clicked[button] = false
-//         }
-//     })
-
-// }
-
-
-// gamepadLoop((gamepad) => {
-//     ['left', 'right'].forEach(side => {
-//         checkForSelector(gamepad, side)
-//     })
-
-//     checkForKeyboard(gamepad)
-//     checkForButtons(gamepad)
-// })
 
 
 const gp = new GamepadController()
+gp.remap({axes:{rightStickY:5},buttons:{select:8,start:7}})
 
 gp.on({ type: 'axes', axes: "leftStickX" }, (gp) => {
     gamepadToKeyboard(gp, 'left')
