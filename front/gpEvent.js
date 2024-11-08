@@ -63,9 +63,8 @@ export class GpEventObj {
             down: 'isButtonDown'
         }
         
+        
         const getEventState = eventStates[btnState]
-        console.log('btnState', btnState);
-        console.log('getEventState', getEventState);
 
         if (!gamepad[getEventState](buttonName)) { return }
 
