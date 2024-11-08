@@ -1,8 +1,8 @@
 import { GamepadController } from "./Gamepad.js";
-import { gamepadLoop } from "./gamepadLoop.js";
 import { selectKeyboard } from "./mapKeybords.js";
 import { send } from "./sendTextAndKeys.js";
 import { stickToKeys } from "./stickToKeys.js";
+
 
 
 /**
@@ -91,92 +91,151 @@ function drawActiveArea(keyboardSide, activeAreaPos, selectorPos) {
 
 }
 
-// todo update Gamepad class with this function
-let clicked = { left: false, right: false, select: false }
-/**
- * 
- * @param {GamepadController} gamepad 
- * @param {'left' | 'right'} side 
- */
-function checkForSelector(gamepad, side) {
+// // todo update Gamepad class with this function
+// let clicked = { left: false, right: false, select: false }
+// /**
+//  * 
+//  * @param {GamepadController} gamepad 
+//  * @param {'left' | 'right'} side 
+//  */
+// function checkForSelector(gamepad, side) {
 
-    const shoulder = side === 'left' ? 'shoulderL' : 'shoulderR'
-    if (gamepad.buttonIsPressed(shoulder)) {
+//     const shoulder = side === 'left' ? 'shoulderL' : 'shoulderR'
+//     if (gamepad.isButtonPressed(shoulder)) {
 
-        if (clicked[side]) { return }
+//         if (clicked[side]) { return }
 
-        const keyboardElement = document.querySelector(`.keyboard-${side}`)
-        const key = keyboardElement.querySelector(`.selector`)
-        const text = key.textContent
+//         const keyboardElement = document.querySelector(`.keyboard-${side}`)
+//         const key = keyboardElement.querySelector(`.selector`)
+//         const text = key.textContent
 
-        key.classList.add('clicked')
-        setTimeout(() => key.classList.remove('clicked'), 200)
+//         key.classList.add('clicked')
+//         setTimeout(() => key.classList.remove('clicked'), 200)
 
 
-        if (text.length > 1) {
-            send.text(text)
-        } else {
-            send.key(text)
-        }
-        
-        console.log('sending', text);
+//         if (text.length > 1) {
+//             send.text(text)
+//         } else {
+//             send.key(text)
+//         }
 
-        clicked[side] = true
+//         console.log('sending', text);
 
+//         clicked[side] = true
+
+//     } else {
+//         clicked[side] = false
+//     }
+// }
+
+function selectorClick(side) {
+
+    const keyboardElement = document.querySelector(`.keyboard-${side}`)
+    const key = keyboardElement.querySelector(`.selector`)
+    const text = key.textContent
+
+    key.classList.add('clicked')
+    setTimeout(() => key.classList.remove('clicked'), 200)
+
+
+    if (text.length > 1) {
+        send.text(text)
     } else {
-        clicked[side] = false
+        send.key(text)
     }
-}
 
-let keyboardIndexCounter = 1
-function checkForKeyboard(gamepad) {
-    
-    
-    if (gamepad.buttonIsPressed('select')) {
-        
-        if (clicked['select']) { return }
-        clicked['select'] = true
-        
-        selectKeyboard(keyboardIndexCounter)
-
-        keyboardIndexCounter++
-
-    } else {
-        clicked['select'] = false
-    }
-}
-
-/**
- * 
- * @param {GamepadController} gamepad
- */
-function checkForButtons(gamepad) {
-    const keys = ['delete','backspace','enter','space']
-    const buttons= ['faceNorth', 'faceSouth', 'faceEast', 'faceWest']
-    
-    buttons.forEach((button,i) => {
-        if (gamepad.buttonIsPressed(button)) {
-            
-            if (clicked[button]) { return }
-            clicked[button] = true
-            
-            send.key(keys[i])
-            console.log('sending', keys[i]);
-        
-        } else {
-            clicked[button] = false
-        }
-    })
-
+    console.log('sending', text);
 }
 
 
-gamepadLoop((gamepad) => {
-    ['left', 'right'].forEach(side => {
-        gamepadToKeyboard(gamepad, side)
-        checkForSelector(gamepad, side)
-    })
+// let keyboardIndexCounter = 1
+// function checkForKeyboard(gamepad) {
 
-    checkForKeyboard(gamepad)
-    checkForButtons(gamepad)
+
+//     if (gamepad.buttonIsPressed('select')) {
+
+//         if (clicked['select']) { return }
+//         clicked['select'] = true
+
+//         selectKeyboard(keyboardIndexCounter)
+
+//         keyboardIndexCounter++
+
+//     } else {
+//         clicked['select'] = false
+//     }
+// }
+
+// /**
+//  * 
+//  * @param {GamepadController} gamepad
+//  */
+// function checkForButtons(gamepad) {
+//     const keys = ['delete', 'backspace', 'enter', 'space']
+//     const buttons = ['faceNorth', 'faceSouth', 'faceEast', 'faceWest']
+
+//     buttons.forEach((button, i) => {
+//         if (gamepad.buttonIsPressed(button)) {
+
+//             if (clicked[button]) { return }
+//             clicked[button] = true
+
+//             send.key(keys[i])
+//             console.log('sending', keys[i]);
+
+//         } else {
+//             clicked[button] = false
+//         }
+//     })
+
+// }
+
+
+// gamepadLoop((gamepad) => {
+//     ['left', 'right'].forEach(side => {
+//         checkForSelector(gamepad, side)
+//     })
+
+//     checkForKeyboard(gamepad)
+//     checkForButtons(gamepad)
+// })
+
+
+const gp = new GamepadController()
+
+gp.on({ type: 'axes', axes: "leftStickX" }, (gp) => {
+    gamepadToKeyboard(gp, 'left')
 })
+
+gp.on({ type: 'axes', axes: "rightStickX" }, (gp) => {
+    gamepadToKeyboard(gp, 'right')
+})
+
+
+gp.on({ type: 'button', button: 'shoulderL', is:'pressed' }, (gp) => {
+    selectorClick('left')
+})
+
+gp.on({ type: 'button', button: 'shoulderR', is:'pressed' }, (gp) => {
+    selectorClick('right')
+})
+
+
+let keyboardIndexCounter2 = 1
+gp.on({ type: 'button', button: 'select', is: 'pressed' }, () => {
+
+    selectKeyboard(keyboardIndexCounter2)
+    keyboardIndexCounter2++
+})
+
+
+const keys = ['delete', 'backspace', 'enter', 'space']
+const buttons = ['faceNorth', 'faceSouth', 'faceEast', 'faceWest']
+
+buttons.forEach((button, i) => {
+    gp.on({ type: 'button', button, is: 'pressed' }, () => {
+        send.key(keys[i])
+        console.log('sending', keys[i]);
+    })
+})
+

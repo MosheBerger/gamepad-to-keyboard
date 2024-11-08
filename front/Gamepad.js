@@ -1,11 +1,13 @@
-/** @import { GamepadButtonName, GamepadAxes,ButtonState,GpEventPayload } from './types.d.ts' */
+/** @import { GpButtonName,RemapPayload, GpAxesName,ButtonState,GpEvent, GpEventCallback } from './types.d.ts' */
+
+import { GpEventObj } from './gpEvent.js'
 
 
 
 export class GamepadController {
 
     /**@type {number} */ #gamepadIndex
-    
+
     /**@type {Gamepad} */ #gamepadState
     /**@type {Gamepad} */ #gamepadLastState
 
@@ -19,35 +21,40 @@ export class GamepadController {
 
         window.addEventListener('gamepadconnected', (e) => {
             this.#onDisconnect()
-            const gamepad = e.gamepad
-            this.#gamepadIndex = gamepad.index
-            this.#onConnect()
+            this.#onConnect(e)
         })
 
-        window.addEventListener('gamepaddisconnected',
-            this.#onDisconnect
+        window.addEventListener('gamepaddisconnected', () =>
+            this.#onDisconnect()
         )
-
-        console.log('gamepadObj', this.#gamepadState);
     }
 
 
-    #onConnect() {
+    #onConnect(e) {
         console.log('gamepad connected');
-        this.#loopInterval = setInterval(this.#loop, 1000 / 60)
+
+        this.#gamepadIndex = e.gamepad.index
+
+        this.#loopInterval = setInterval( ()=> this.#loop(), 1000 / 60)
     }
     #onDisconnect() {
         if (!this.#loopInterval) { return }
 
         console.log('gamepad disconnected');
+        
         clearInterval(this.#loopInterval)
+        this.#loopInterval = null
     }
 
-
-    #callbacks = []
+    /** @type {GpEventObj[]} */
+    gpEvents = []
 
     #loop() {
-        this.#updateButtonsState();
+        this.#updateButtonsState()
+
+        this.gpEvents?.forEach(c=>{
+            c.checkAndRun()
+        })
 
     }
 
@@ -92,7 +99,7 @@ export class GamepadController {
 
     //------BUTTONS AND AXES---------------------
 
-    /** @param {GamepadButtonName} buttonName * @returns {ButtonState} */
+    /** @param {GpButtonName} buttonName * @returns {ButtonState} */
     #getButtonState(buttonName) {
 
         const btnIndex = this.#buttons[buttonName]
@@ -105,45 +112,48 @@ export class GamepadController {
         if (!isPressedNow) return 'up'
     }
 
-    /** @param {GamepadButtonName} buttonName */
+    /** @param {GpButtonName} buttonName */
     isButtonPressed(buttonName) {
         const btnState = this.#getButtonState(buttonName)
         return btnState == 'pressed'
     }
 
-    /** @param {GamepadButtonName} buttonName */
+    /** @param {GpButtonName} buttonName */
     isButtonReleased(buttonName) {
         const btnState = this.#getButtonState(buttonName)
         return btnState == 'released'
     }
 
-    /** @param {GamepadButtonName} buttonName */
+    /** @param {GpButtonName} buttonName */
     isButtonUp(buttonName) {
         const btnState = this.#getButtonState(buttonName)
         return btnState == 'up' || btnState == 'released'
     }
 
-    /** @param {GamepadButtonName} buttonName */
+    /** @param {GpButtonName} buttonName */
     isButtonDown(buttonName) {
         const btnState = this.#getButtonState(buttonName)
         return btnState == 'down' || btnState == 'pressed'
     }
 
-    /** @param {GamepadAxes} stickAndDirection      */
+    /** @param {GpAxesName} stickAndDirection      */
     getAxes(stickAndDirection) {
         return this.#gamepadState.axes[this.#axes[stickAndDirection]];
     }
 
 
-    // todo i'm here
-    /**  @param {GpEventPayload} event */
-    on(event){
-        this.#callbacks.push(new GpEvent(event))
+    /**
+     *  @param {GpEvent} event
+     *  @param {GpEventCallback} callback 
+     */
+    on(event, callback) {
+        const newEvent = new GpEventObj(this, event, callback)
+        this.gpEvents.push(newEvent)
     }
 
     // ------MAPPING-------------
 
-    /** @param {{buttons: {[key in GamepadButtonName]: number}, axes: {[key in Gamepadaxes]: number}}} param0 */
+    /** @param {RemapPayload} param0 */
     remap({ buttons, axes }) {
         this.#buttons = { ...this.#buttons, ...buttons }
         this.#axes = { ...this.#axes, ...axes }
@@ -158,7 +168,13 @@ export class GamepadController {
 }
 
 // const gp = new GamepadController();
-// gp.on({button:'faceNorth',is:'down'})
+// gp.on({ type: 'update' }, () => console.log('update'))
+// gp.on({ type: 'update' }, () => console.log('update2'))
+// gp.on(
+//     { type: 'button', button: 'dPadDown', is: 'pressed' },
+//     () => console.log(`type:'button', button:'dPadDown', is:'pressed'`)
+// )
+// gp.on({ type: 'axes', axes: 'leftStickX' }, () => console.log('stick'))
 // gp.buttonIsPressed('dPadDown')
 // gp.getaxes('leftStickX')
 // gp.remap({
