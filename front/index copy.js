@@ -92,6 +92,57 @@ function drawActiveArea(keyboardSide, activeAreaPos, selectorPos) {
 }
 
 
+let first = ''
+let waitForLeave = false
+function typeWithTwoSticks(gamepad) {
+
+    const LS = stickToKeys(gamepad, 'left')
+    if (!first && LS !== 'middle') { first = 'LS' }
+
+
+    const RS = stickToKeys(gamepad, 'right')
+    if (!first && RS !== 'middle') { first = 'RS' }
+
+
+    if (LS === 'middle' && RS === 'middle') {
+        first = ''
+        drawActiveArea('left', 'middle', 'middle')
+        drawActiveArea('right', 'middle', 'middle')
+        return
+    }
+    console.log('first:', first, 'LS:', LS, 'RS:', RS);
+
+
+    if (first === 'LS') {
+        drawActiveArea('left', LS, RS)
+
+        if (RS === 'middle') {
+            waitForLeave = false
+            return
+        }
+
+        if (waitForLeave) { return }
+
+        selectorClick('left')
+        waitForLeave = true
+
+    }
+
+    if (first === 'RS') {
+        drawActiveArea('right', RS, LS)
+
+        if (LS === 'middle') {
+            waitForLeave = false
+            return
+        }
+
+        if (waitForLeave) { return }
+
+        selectorClick('right')
+        waitForLeave = true
+    }
+}
+
 
 function selectorClick(side) {
 
@@ -116,22 +167,25 @@ function selectorClick(side) {
 
 
 const gp = new GamepadController()
-gp.remap({axes:{rightStickY:5},buttons:{select:8,start:7}})
+gp.remap({ axes: { rightStickY: 5 }, buttons: { select: 8, start: 7 } })
 
 gp.on({ type: 'axes', axes: "leftStickX" }, (gp) => {
-    gamepadToKeyboard(gp, 'left')
+    // gamepadToKeyboard(gp, 'left')
+
+    typeWithTwoSticks(gp)
+
 })
 
-gp.on({ type: 'axes', axes: "rightStickX" }, (gp) => {
-    gamepadToKeyboard(gp, 'right')
-})
+// gp.on({ type: 'axes', axes: "rightStickX" }, (gp) => {
+//     gamepadToKeyboard(gp, 'right')
+// })
 
 
-gp.on({ type: 'button', button: 'shoulderL', is:'pressed' }, (gp) => {
+gp.on({ type: 'button', button: 'shoulderL', is: 'pressed' }, (gp) => {
     selectorClick('left')
 })
 
-gp.on({ type: 'button', button: 'shoulderR', is:'pressed' }, (gp) => {
+gp.on({ type: 'button', button: 'shoulderR', is: 'pressed' }, (gp) => {
     selectorClick('right')
 })
 

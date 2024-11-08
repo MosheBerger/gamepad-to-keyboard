@@ -1,4 +1,4 @@
-import { GamepadController } from "./Gamepad.js"
+import { GamepadController } from "./gamepadClass/Gamepad.js";
 /**
  * 
  * @param {GamepadController} gamepad 

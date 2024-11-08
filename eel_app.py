@@ -33,6 +33,6 @@ def click_key(key):
 
 eel.init('front')
 
-eel.start('index.html', size=(WIDTH, HEIGHT),
+eel.start('index copy.html', size=(WIDTH, HEIGHT),
             position=(screensize[0] - WIDTH, screensize[1] - HEIGHT),
 )
