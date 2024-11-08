@@ -3,7 +3,34 @@ import { selectKeyboard } from "./mapKeybords.js";
 import { send } from "./sendTextAndKeys.js";
 import { stickToKeys } from "./stickToKeys.js";
 
+const leftKeyboard = document.querySelector('.keyboard-left')
+const rightKeyboard = document.querySelector('.keyboard-right')
 
+const elements = {
+    keyboardLeftElements: {
+        'left': leftKeyboard.querySelectorAll('.keyboard-left .left'),
+        'right': leftKeyboard.querySelectorAll('.keyboard-left .right'),
+        'up': leftKeyboard.querySelectorAll('.keyboard-left .up'),
+        'down': leftKeyboard.querySelectorAll('.keyboard-left .down'),
+
+        '-left': leftKeyboard.querySelectorAll('.keyboard-left .-left'),
+        '-right': leftKeyboard.querySelectorAll('.keyboard-left .-right'),
+        '-up': leftKeyboard.querySelectorAll('.keyboard-left .-up'),
+        '-down': leftKeyboard.querySelectorAll('.keyboard-left .-down'),
+    },
+    keyboardRightElements: {
+        'left': rightKeyboard.querySelectorAll('.keyboard-right .left'),
+        'right': rightKeyboard.querySelectorAll('.keyboard-right .right'),
+        'up': rightKeyboard.querySelectorAll('.keyboard-right .up'),
+        'down': rightKeyboard.querySelectorAll('.keyboard-right .down'),
+
+        '-left': rightKeyboard.querySelectorAll('.keyboard-right .-left'),
+        '-right': rightKeyboard.querySelectorAll('.keyboard-right .-right'),
+        '-up': rightKeyboard.querySelectorAll('.keyboard-right .-up'),
+        '-down': rightKeyboard.querySelectorAll('.keyboard-right .-down'),
+    },
+    allKeys: document.querySelectorAll('.key')
+}
 
 /**
  * @typedef {'middle' | 'middleLeft' | 'middleRight' | 'left' | 'right' | 'up' | 'down' } StickPosition
@@ -71,23 +98,30 @@ function gamepadToKeyboard(gamepad, side) {
 
 function drawActiveArea(keyboardSide, activeAreaPos, selectorPos) {
 
-    const keyboardElement = document.querySelector(`.keyboard-${keyboardSide}`)
+    const keyboardElement = elements[`keyboard${keyboardSide === 'left' ? 'Left' : 'Right'}Elements`] //document.querySelector(`.keyboard-${keyboardSide}`)
 
-    keyboardElement.querySelectorAll(`.key:not(.${activeAreaPos}.-${selectorPos})`).forEach(k => {
+    // keyboardElement.querySelectorAll(`.key:not(.${activeAreaPos}.-${selectorPos})`).forEach(k => {
+    //     k.classList.remove('selector')
+    // })
+
+    // keyboardElement.querySelectorAll(`.key:not(.${activeAreaPos})`).forEach(k => {
+    //     k.classList.remove('active-area')
+    // })
+
+    elements.allKeys.forEach(k => {
+        k.classList.remove('active-area')
         k.classList.remove('selector')
     })
 
-    keyboardElement.querySelectorAll(`.key:not(.${activeAreaPos})`).forEach(k => {
-        k.classList.remove('active-area')
-    })
-
-    keyboardElement.querySelectorAll(`.${activeAreaPos}`).forEach(k => {
+    keyboardElement[activeAreaPos].forEach(k => {
         k.classList.add('active-area')
     })
 
-    keyboardElement.querySelectorAll(`.${activeAreaPos}.-${selectorPos}`).forEach(k => {
-        k.classList.add('selector')
-    })
+    // keyboardElement.querySelectorAll(`.${activeAreaPos}`).forEach(k => {
+    //     k.classList.add('active-area')
+    // })
+
+    document.querySelector(`.keyboard-${keyboardSide} .${activeAreaPos}.-${selectorPos}`).classList.add('selector')
 
 }
 
