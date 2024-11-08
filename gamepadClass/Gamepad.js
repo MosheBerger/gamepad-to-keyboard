@@ -1,6 +1,6 @@
-/** @import { GpButtonName,RemapPayload, GpAxesName,ButtonState,GpEvent, GpEventCallback } from './types.d.ts' */
+/** @import { GpButtonName,RemapPayload, GpAxesName,ButtonState,GpEvent, GpEventCallback } from '../front/types' */
 
-import { GpEventObj } from './gpEvent.js'
+import { GpEventObj } from '../front/gpEvent.js'
 
 
 
