@@ -96,7 +96,7 @@ body {
         z-index: 99;
 
         /* == MOVE TO 4 SIDES ==  */
-        /* 
+        
         &.left {
             translate: -6px 0;
             &.-left{
@@ -123,11 +123,11 @@ body {
             &.-down{
                 translate: 0 28px;
             }
-        } */
+        }
 
 
         /* == MOVE TO JUST A LITTLE == */
-        &.left {
+        /* &.left {
             translate: -6px 0;
 
         }
@@ -145,7 +145,7 @@ body {
         &.down {
             translate: 0 6px;
 
-        } 
+        }  */
 
         /* &.-left {
             translate: -1px 0;

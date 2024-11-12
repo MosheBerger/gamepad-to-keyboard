@@ -201,7 +201,7 @@ function selectorClick(side) {
 
 
 const gp = new GamepadController()
-gp.remap({ axes: { rightStickY: 5 }, buttons: { select: 8, start: 7 } })
+gp.remap({ /* axes: { rightStickY: 5 }, */ buttons: { select: 8, start: 7 } })
 
 gp.on({ type: 'axes', axes: "leftStickX" }, (gp) => {
     // gamepadToKeyboard(gp, 'left')

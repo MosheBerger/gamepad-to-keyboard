@@ -1,1 +1,0 @@
-python -m eel eel_app.py front  --icon GamepadIcon.ico --name GPkeyboard --noconsole --onefile 

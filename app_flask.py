@@ -3,7 +3,7 @@
 from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 from pynput.keyboard import Controller, Key
-import type_and_click
+import modules.type_and_click as type_and_click
 
 app = Flask(__name__, static_folder='front')
 CORS(app)
