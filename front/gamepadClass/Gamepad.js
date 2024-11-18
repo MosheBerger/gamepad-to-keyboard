@@ -11,6 +11,8 @@ export class GamepadController {
     /**@type {Gamepad} */ #gamepadState
     /**@type {Gamepad} */ #gamepadLastState
 
+    /**@type {GpEventObj[]} */ gpEvents = []
+
     #loopInterval = null
 
     AXES_DEAD_ZONE = 0.2
@@ -35,27 +37,41 @@ export class GamepadController {
 
         this.#gamepadIndex = e.gamepad.index
 
-        this.#loopInterval = setInterval( ()=> this.#loop(), 1000 / 60)
+        this.#loopInterval = setInterval(() => this.#loop(), 1000 / 60)
     }
     #onDisconnect() {
         if (!this.#loopInterval) { return }
 
         console.log('gamepad disconnected');
-        
+
         clearInterval(this.#loopInterval)
+        this.#gamepadIndex = null
         this.#loopInterval = null
     }
 
-    /** @type {GpEventObj[]} */
-    gpEvents = []
+
+
+    //------📅 EVENTS---------------------
+
+    /**
+     *  @param {GpEvent} event
+     *  @param {GpEventCallback} callback 
+     */
+    on(event, callback) {
+        const newEvent = new GpEventObj(this, event, callback)
+        this.gpEvents.push(newEvent)
+    }
+
+    removeAllEvents() {
+        this.gpEvents = []
+    }
 
     #loop() {
         this.#updateButtonsState()
 
-        this.gpEvents?.forEach(c=>{
+        this.gpEvents?.forEach(c => {
             c.checkAndRun()
         })
-
     }
 
     #updateButtonsState() {
@@ -63,6 +79,7 @@ export class GamepadController {
         this.#gamepadState = navigator.getGamepads()[this.#gamepadIndex];
     }
 
+    //------🔴 MAP INDEXES 🎮---------------------
 
     #buttons = {
         faceNorth: 3,
@@ -97,7 +114,23 @@ export class GamepadController {
     }
 
 
-    //------BUTTONS AND AXES---------------------
+
+
+    // ------📍 MAPPING-------------
+
+    /** @param {RemapPayload} param0 */
+    remap({ buttons, axes }) {
+        this.#buttons = { ...this.#buttons, ...buttons }
+        this.#axes = { ...this.#axes, ...axes }
+    }
+
+    getMapping() {
+        return { buttons: this.#buttons, axes: this.#axes }
+    }
+
+
+
+    //------🔘 BUTTONS AND AXES 🕹️---------------------
 
     /** @param {GpButtonName} buttonName * @returns {ButtonState} */
     #getButtonState(buttonName) {
@@ -141,27 +174,6 @@ export class GamepadController {
         return this.#gamepadState.axes[this.#axes[stickAndDirection]];
     }
 
-
-    /**
-     *  @param {GpEvent} event
-     *  @param {GpEventCallback} callback 
-     */
-    on(event, callback) {
-        const newEvent = new GpEventObj(this, event, callback)
-        this.gpEvents.push(newEvent)
-    }
-
-    // ------MAPPING-------------
-
-    /** @param {RemapPayload} param0 */
-    remap({ buttons, axes }) {
-        this.#buttons = { ...this.#buttons, ...buttons }
-        this.#axes = { ...this.#axes, ...axes }
-    }
-
-    getMapping() {
-        return { buttons: this.#buttons, axes: this.#axes }
-    }
 
 
 
