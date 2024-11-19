@@ -14,7 +14,7 @@ window = webview.create_window(
     height=winsp['size'][1],
     x=(winsp['pos'][0]/2).__floor__(),
     y=(winsp['pos'][1]/2).__floor__(),
-    frameless=True,
+    # frameless=True,
     easy_drag=True,
 
     # js_api=True,

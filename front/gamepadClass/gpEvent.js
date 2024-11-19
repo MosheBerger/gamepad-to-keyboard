@@ -8,11 +8,14 @@ export class GpEventObj {
      *  @param {GamepadController} gamepad - The type of event can be one of the following: 'onPress', 'whilePressed', 'onRelease', 'whileReleased' 
      * @param {GpEvent} event - The type of event can be one of the following: 'onPress', 'whilePressed', 'onRelease', 'whileReleased' 
      * @param {GpEventCallback} callback - The function to call when the event is triggered 
+     * @param {string} [description] - The function to call when the event is triggered 
      */
-    constructor(gamepad, event, callback) {
+    constructor(gamepad, event, callback, description) {
         this.gamepad = gamepad
         this.eventType = event
         this.callback = callback
+        this.id = Symbol(description)
+        // todo i'm here
     }
 
 

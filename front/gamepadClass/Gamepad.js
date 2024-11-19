@@ -56,15 +56,26 @@ export class GamepadController {
     /**
      *  @param {GpEvent} event
      *  @param {GpEventCallback} callback 
+     *  @param {string} [description]
      */
-    on(event, callback) {
-        const newEvent = new GpEventObj(this, event, callback)
+    on(event, callback, description) {
+        const newEvent = new GpEventObj(this, event, callback, description)
         this.gpEvents.push(newEvent)
+        return newEvent.id
     }
 
     removeAllEvents() {
         this.gpEvents = []
     }
+
+    removeEventsById(id) {
+        this.gpEvents = this.gpEvents.filter(e => e.id !== id)
+    }
+
+    removeEventByDescription(description) {
+        this.gpEvents = this.gpEvents.filter(e => e.description !== description)
+    }
+
 
     #loop() {
         this.#updateButtonsState()
